@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>完成接单</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="./../../statics/static/css/mui.min.css">
+    <link rel="stylesheet" href="./../../statics/static/css/public.css">
+    <link rel="stylesheet" href="./../../statics/static/css/overRecipt.css">
+    <link rel="stylesheet" href="../../statics/assets/vendor/bootstrap/css/bootstrap.css">
+    <script src="./../../statics/static/js/angular.min.js"></script>
+    <script src="../../statics/static/js/ng-file-upload.min.js"></script>
+    <script src="../../statics/static/js/ng-file-upload-shim.min.js"></script>
+</head>
+<body ng-controller="overRecipt"  ng-cloak >
+<div ng-repeat="vac in repairsList">
+    <header class="mui-bar mui-bar-nav">
+        <a style="touch-action: none;" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+        <h1 class="mui-title">完成接单</h1>
+    </header>
+    <div class="mui-content" >
+        <img class="con_img" src="./../../statics/static/img/over.png" />
+        <p class="con_p">{{vac.repStateName}}</p>
+    </div>
+    <div class="con_all"></div>
+    <div class="content">
+        <div class="con_div1">
+            <div class="info_div">
+                <img class="info_img" src="./../../statics/static/img/name.png" height="44" width="44"/>
+                <p class="info_p1">{{vac.applicant}}</p>
+                <p class="info_p1">{{vac.phone}}</p>
+            </div>
+        </div>
+        <div class="con_div2">
+            <div class="info_div2">
+                <img class="info_img2" src="./../../statics/static/img/place.png"/>
+                <p class="info_p3">{{vac.position}}</p>
+            </div>
+        </div>
+        <div class="con_div3"></div>
+        <div class="con_div4">
+            <div class="info_div3">
+                报修内容：
+                <span class="info_p4">{{vac.contentName}}</span>
+            </div>
+            <div class="info_div4">
+                报修时间：
+                <span class="info_p5">{{vac.repair_data}}</span>
+            </div>
+            <div class="info_div3">
+                <p class="info_ps">报修图片：</p>
+                <div class="img_div" ng-repeat="picImg in vac.picture.split(',') track by $index" >
+                    <img class="picImg" ng-click="seeImg(picImg)" ngf-thumbnail="picImg" data-preview-src="">
+                </div>
+                <span class="info_p7">{{vac.modify_date}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="con_all"></div>
+    <div class="content">
+        <div class="mui-input-row con_con2">
+            <span class="info_p6">处理进度：</span>
+            <ul class="time_ul">
+                <li class="time_li" ng-repeat="sch in vac.repairings">
+                    <div class="time_div1">
+                        <span ng-if="sch.state!=5" class="time_span1"></span>
+                        <img ng-if="sch.state==5 || sch.state==3" class="time_img" src="./../../statics/static/img/times.png"/>
+                        <span ng-if="!$last" class="time_spans"></span>
+                    </div>
+                    <div class="time_div2">
+                        <div class="time_div3">
+                            <span class="time_span2">{{sch.stateName}}</span>
+                            <span class="time_span3">{{sch.modify_date}}</span>
+                        </div>
+                        <div class="time_div4">
+                            {{sch.schedInfo}}
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="con_all" ng-if="vac.state==5"></div>
+    <div class="content" ng-if="vac.state==5">
+        <div class="mui-input-row">
+            <label class="con_lab1">服务评价：</label>
+            <div class="cli_div">
+                <img class="cli_img" ng-repeat="g in vac.arr track by $index" src="./../../statics/static/img/click.png"/>
+                <img class="cli_img" ng-repeat="g in vac.arr | limitTo:(5-vac.grades) track by $index" src="./../../statics/static/img/noclick.png"/>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--图片展示-->
+<div class="modal fade " id="imgModel" tabindex="-1" role="dialog" aria-labelledby="modal-default-label">
+    <div class="modal-dialog" role="document">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" >
+            <span aria-hidden="true" class="cross">&times;</span>
+        </button>
+        <div id="imgul" class="imgDiv">
+            <img ngf-thumbnail="picfile" data-preview-src="" alt="图片" class="imgImg">
+        </div>
+    </div>
+</div>
+
+</body>
+<script src="./../../statics/static/js/jquery-3.2.1.min.js"></script>
+<script src="../../statics/assets/vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="./../../statics/static/js/mui.min.js"></script>
+<script src="./../../statics/static/js/overRecipt.js"></script>
+</html>

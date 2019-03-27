@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+    <meta charset="UTF-8">
+    <title>接单</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="./../static/css/mui.min.css">
+    <link rel="stylesheet" href="./../static/css/public.css">
+    <link rel="stylesheet" href="./../static/css/receipt.css">
+    <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.css">
+    <script src="./../static/js/angular.min.js"></script>
+    <script src="./../static/js/ng-file-upload.min.js"></script>
+    <script src="./../static/js/ng-file-upload-shim.min.js"></script>
+</head>
+<body ng-controller="recipt" ng-cloak>
+<div ng-repeat="vac in repairsList">
+    <header class="mui-bar mui-bar-nav">
+        <a style="touch-action: none;" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+        <h1 class="mui-title">接单</h1>
+    </header>
+    <div class="mui-content">
+        <img class="con_img" src="./../static/img/over.png" />
+        <p class="con_p">{{vac.repStateName}}</p>
+    </div>
+    <div class="content">
+        <div class="con_div1">
+            <div class="info_div">
+                <img class="info_img" src="./../static/img/name.png" height="44" width="44"/>
+                <p class="info_p1">{{vac.applicant}}</p>
+                <p class="info_p1">{{vac.phone}}</p>
+            </div>
+            <div class="info_div1">
+                {{vac.urgentName}}
+            </div>
+        </div>
+        <div class="con_div2">
+            <div class="info_div2">
+                <img class="info_img2" src="./../static/img/place.png"/>
+                <p class="info_p3">{{vac.position}}</p>
+            </div>
+            <img class="info_img3" src="./../static/img/ipo.png" ng-click="callphone(vac)"/>
+        </div>
+        <div class="con_div3"></div>
+        <div class="con_div4">
+            <div class="info_div3">
+                报修内容：
+                <span class="info_p4">{{vac.contentName}}</span>
+            </div>
+            <div class="info_div4">
+                报修时间：
+                <span class="info_p5">{{vac.repair_data}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="content">
+        <div class="mui-input-row con_con1">
+            <label for="num" class="con_lab">保修编号：</label>
+            <input id="num" class="con_ipt" type="text" ng-model="vac.repair_code" readonly>
+        </div>
+        <div class="mui-input-row con_con1">
+            <label for="pro" class="con_lab">故障问题说明：</label>
+            <textarea id="pro" class="con_ipt" ng-model="vac.problem" rows="1" placeholder="请输入"></textarea>
+        </div>
+        <div class="mui-input-row con_con2">
+            <span class="info_p6">维修类型：</span>
+            <ul class="mui-row ser_ul">
+                <li class="mui-table-view-cell mui-radio mui-left mui-col-sm-5 ser_li" ng-click="mainType(ser)" ng-repeat="ser in services">
+                    <input name="radio" type="radio">{{ser.explians}}
+                </li>
+            </ul>
+        </div>
+        <div class="mui-input-row con_con1">
+            <label for="money" class="con_lab1">费<span style="visibility: hidden">影藏</span>用：</label>
+            <input id="money" class="con_ipt" ng-model="vac.cost" type="number" placeholder="请输入金额">
+        </div>
+        <div class="mui-input-row con_con1">
+            <label for="moneyOther" class="con_lab1">其他费用：</label>
+            <input id="moneyOther" class="con_ipt" ng-model="vac.othercost" type="number" placeholder="请输入金额">
+        </div>
+        <div class="mui-input-row div_fot">
+            <img class="con_img2" src="./../static/img/iphone.png" ngf-select="upFiles($files,vac)" ngf-accept="'image/*'" ngf-multiple="true" >
+            <div class="images">
+                <div class="" ng-repeat="file in vac.files">
+                    <img ngf-thumbnail="file" data-preview-src="" ng-click="img_shows(file)">
+                    <p class="task-rings" ng-click="deleteFile(vac,$index)">
+                        <span class="span_sp"></span>
+                    </p>
+                </div>
+            </div>
+            <label for="pro" class="con_labs"> 维修说明：</label>
+            <div class="con_div5">
+                <div class="info_div5">
+                    <textarea class="" ng-model="vac.explains" rows="2"></textarea>
+                </div>
+                <div class="info_div6">
+                    提交时间：
+                    <span>{{vac.modify_date}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <button type="button" ng-click="overSer(vac)">完成维修</button>
+        </div>
+    </div>
+</div>
+
+<!--弹出框-->
+<div class="modal fade " id="imgModel" tabindex="-1" role="dialog" aria-labelledby="modal-default-label" style="">
+    <div class="modal-dialog" role="document" style="margin-top: 6rem;position: relative;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="position: fixed;right:0px;top: -3rem;font-size: 35px;opacity: .8;">
+            <span aria-hidden="true" style="color: #fff;">&times;</span>
+        </button>
+        <div id="imgul" style="position: relative;left: 5rem;width: 70%;height: 100%;">
+            <img  style="width: 100%" ngf-thumbnail="picfile" data-preview-src="" alt="">
+        </div>
+    </div>
+</div>
+</body>
+<script src="./../static/js/jquery-3.2.1.min.js"></script>
+<script src="../static/bootstrap/js/bootstrap.min.js"></script>
+<script src="./../static/js/mui.min.js"></script>
+<script src="./../static/js/receipt.js"></script>
+</html>

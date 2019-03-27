@@ -1,0 +1,1 @@
+var appurl ="http://"+document.domain+":8081//";

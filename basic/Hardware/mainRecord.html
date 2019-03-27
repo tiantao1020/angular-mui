@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+    <meta charset="utf-8">
+    <title>维修记录</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="./../../statics/static/css/mui.min.css">
+    <link rel="stylesheet" href="./../../statics/static/css/public.css">
+    <link rel="stylesheet" href="./../../statics/static/css/mainRecord.css">
+    <script src="./../../statics/static/js/angular.min.js"></script>
+</head>
+<body ng-controller="mainRecord"  ng-cloak>
+<header class="mui-bar mui-bar-nav mui_bar_nav">
+    <a style="touch-action: none;" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+    <h1 class="mui-title">维修记录</h1>
+</header>
+<div class="mui-content">
+    <div class="mui-input-row mui_ipt_row" ng-repeat="numAll in countList">
+        <input type="text" id="myInput" class="cont_ipt" ng-click="iptSty()" placeholder="搜索">
+        <button type="button" class="mui-btn cont_btn" ng-click="myQuery()">查询</button>
+        <a class="con_a" ng-click="con_a()">
+            <span class="con_span1">全<span style="visibility: hidden">猜</span>部</span>
+            (<span class="con_span2">{{numAll.countTotal}}</span>)
+            <img src="./../../statics/static/img/all.png" height="28" width="28"/>
+        </a>
+    </div>
+    <ul class="mui-row con_ul" ng-repeat="numAll in countList">
+        <li id="countTotal" class="mui-col-sm-3 con_li con_seion" ng-click="queState('',numAll,'#countTotal')">
+            <span>全<span style="visibility: hidden">猜</span>部</span>
+            (<span>{{numAll.countTotal}}</span>)
+        </li>
+        <li id="submitTotal" class="mui-col-sm-3 con_li"  ng-click="queState(1,numAll,'#submitTotal')">
+            <span>待接单</span>
+            (<span>{{numAll.submitTotal}}</span>)
+        </li>
+        <li id="catchTotal" class="mui-col-sm-3 con_li"  ng-click="queState(2,numAll,'#catchTotal')">
+            <span>已接单</span>
+            (<span>{{numAll.catchTotal}}</span>)
+        </li>
+        <li id="sureTotal" class="mui-col-sm-3 con_li"  ng-click="queState(4,numAll,'#sureTotal')">
+            <span>待确定</span>
+            (<span>{{numAll.sureTotal}}</span>)
+        </li>
+        <li id="turnTotal" class="mui-col-sm-3 con_li"  ng-click="queState(7,numAll,'#turnTotal')">
+            <span>已转单</span>
+            (<span>{{numAll.turnTotal}}</span>)
+        </li>
+        <li id="fulfilTotal" class="mui-col-sm-3 con_li"  ng-click="queState(5,numAll,'#fulfilTotal')">
+            <span>已完成</span>
+            (<span>{{numAll.fulfilTotal}}</span>)
+        </li>
+        <li id="refuseTotal" class="mui-col-sm-3 con_li"  ng-click="queState(3,numAll,'#refuseTotal')">
+            <span>已拒绝</span>
+            (<span>{{numAll.refuseTotal}}</span>)
+        </li>
+    </ul>
+</div>
+<ul id="mainRec" class="mainRec_ul">
+    <li class="mainRec_li" ng-repeat="vac in repairsList">
+        <a href="#">
+            <div id="allDiv">
+                <div class="details" ng-click="viDet(vac)">
+                    <div class="det_div1">
+                        <p class="det_p1">{{vac.offName}}-{{vac.applicant   }}</p>
+                        <p class="det_p2">
+                            <span ng-class="vac.urgent">{{vac.urgentName}}</span>
+                            <span>{{vac.urgenttime}}</span>
+                        </p>
+                    </div>
+                    <div class="det_sol"></div>
+                    <div  class="det_div2">
+                        <div class="det_divs1">
+                            <p class="det_p3">
+                                位置：<span>{{vac.position}}</span>
+                            </p>
+                            <p class="det_p4">
+                                姓名：<span>{{vac.applicant}}</span>
+                                <!--<a href=""></a>-->
+                                <img ng-click="callphone(vac)" class="det_img" src="./../../statics/static/img/ipo.png"/>
+                            </p>
+                        </div>
+                        <div class="det_divs2" ng-class="vac.clazz">
+                            {{vac.repStateName}}
+                        </div>
+                    </div>
+                    <div class="det_div3">
+                        <div class="det_divs3">
+                            {{vac.contentName}}
+                        </div>
+                        <div class="det_divs4">
+                            提交时间：
+                            <span>{{vac.repair_data}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="det_div4">
+                    <button type="button" ng-if="vac.state=='1' || (vac.state=='7'&& userId!=vac.update_userid) " class="det_ipt1" ng-click="refuses(vac,1)">拒绝</button>
+                    <button type="button" ng-if="vac.state=='1' || (vac.state=='7'&& userId!=vac.update_userid) " class="det_ipt2" ng-click="receipt(vac,2)">接单</button>
+                    <button type="button" ng-if="vac.state=='5'" class="det_ipt3" ng-click="viewEva(vac)">查看评价</button>
+                    <button type="button" ng-if="vac.state=='2'" class="det_ipt1"  ng-click="refuses(vac,2)">转单</button>
+                    <button type="button" ng-if="vac.state=='2'" class="det_ipt2" ng-click="repair(vac)">完成维修</button>
+                    <div ng-if="vac.state=='4'" class="det_ipt4">等待{{vac.applicant}}确认完成</div>
+                    <div ng-if="vac.state=='7'&& userId==vac.update_userid" class="det_ipt4">{{vac.meetOnly}}</div>
+                    <div ng-if="vac.state=='3'" class="det_ipt4">{{vac.refuseName}}已拒绝</div>
+                </div>
+            </div>
+        </a>
+    </li>
+</ul>
+<!--拒绝提交时显示-->
+<div id="screen" class="box mui-popover mui-popover-action mui-popover-bottom">
+    <div class="mui-content">
+        <div class="scr_div">
+            <ul class="mui-table-view ref_ul">
+                <li class="mui-table-view-cell mui-collapse mui-active ref_li">
+                    <a class="mui-navigate-right ref_a" href="#">请选择拒绝理由</a>
+                    <div class="mui-collapse-content">
+                        <ul class="mui-row ser_ul">
+                            <!--拒绝理由-->
+                            <li class="mui-table-view-cell mui-radio mui-left mui-col-sm-6 ser_li showExp" ng-click="refusesIds(list)" ng-repeat="list in listUl">
+                                <input name="refuses" type="radio">{{list.explians}}
+                            </li>
+                            <!--转单人-->
+                            <li class="mui-table-view-cell mui-radio mui-left mui-col-sm-6 ser_li showNam" ng-click="transferId(vac)" ng-repeat="vac in userList">
+                                <input name="transfer_id"  type="radio">{{vac.name}}
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+            <!--拒绝备注-->
+            <textarea class="scr_tex showExp" rows="4" ng-model="refuse" placeholder="请在这里留下您的备注"></textarea>
+            <!--转单理由-->
+            <textarea class="scr_tex showNam" rows="4" ng-model="transfers" placeholder="请在这里留下您的备注"></textarea>
+        </div>
+    </div>
+    <div class="fot_div">
+        <button type="button" class="backBtn" ng-click="backBtn()">返回</button>
+        <button type="button" id="fot_btn" class="sumBtn" ng-click="subReceipt()">提交</button>
+    </div>
+</div>
+<!--如果没有内容显示-->
+<div class="all_null">
+    <img src="./../../statics/static/img/null.png"/>
+    <p class="tsy">目前查询到该设备没有处理记录哦</p>
+</div>
+
+<script src="./../../statics/static/js/jquery-3.2.1.min.js"></script>
+<script src="./../../statics/static/js/mui.min.js"></script>
+<script src="./../../statics/static/js/mainRecord.js"></script>
+</body>
+</html>
